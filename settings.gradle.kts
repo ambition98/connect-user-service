@@ -1,1 +1,1 @@
-rootProject.name = "Connect-User-Service"
+rootProject.name = "connect-user-service"
