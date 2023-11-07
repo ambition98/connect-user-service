@@ -8,12 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.connect.user.web.dto.response.KakaoCallbackResponse;
 import xyz.connect.user.web.dto.response.LoginResponse;
 import xyz.connect.user.web.service.OAuth.OAuthService;
 
@@ -26,24 +23,24 @@ public class OAuthController {
 
     private final OAuthService oAuthService;
 
-    @Operation(summary = "카카오 콜백")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "카카오 코드 요청 성공")}
-    )
-    @GetMapping("/auth/kakao/callback")
-    public ResponseEntity<KakaoCallbackResponse> kakaoCallBack(@RequestParam String code) {
-        KakaoCallbackResponse kakaoCallbackResponse = new KakaoCallbackResponse(code);
-        return ResponseEntity.ok(kakaoCallbackResponse);
-    }
+//    @Operation(summary = "카카오 콜백")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "카카오 코드 요청 성공")}
+//    )
+//    @GetMapping("/auth/kakao/callback")
+//    public ResponseEntity<KakaoCallbackResponse> kakaoCallBack(@RequestParam String code) {
+//        KakaoCallbackResponse kakaoCallbackResponse = new KakaoCallbackResponse(code);
+//        return ResponseEntity.ok(kakaoCallbackResponse);
+//    }
 
 
     @Operation(summary = "카카오 로그인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카카오 로그인 성공")}
     )
-    @PostMapping("/loginKakao")
-    public ResponseEntity<LoginResponse> loginKakao(@RequestParam String code) {
-        LoginResponse loginResponse = oAuthService.loginKakao(code, "KakaoRequestInfoHelper");
+    @PostMapping("/oauth/kakao/login")
+    public ResponseEntity<LoginResponse> loginKakao(String code) {
+        LoginResponse loginResponse = oAuthService.loginKakao(code, "kakaoRequestInfoHelper");
         return ResponseEntity.ok(loginResponse);
     }
 }
