@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import xyz.connect.user.config.JwtTokenProvider;
+import xyz.connect.user.web.dto.params.KaKaoInfoParam;
 import xyz.connect.user.web.dto.params.OAuthInfoParam;
 import xyz.connect.user.web.dto.response.LoginResponse;
 import xyz.connect.user.web.entity.AccountType;
@@ -24,13 +25,14 @@ public class OAuthService {
 
     @Value("${jwt.token.secret}")
     private String key;
-    private Long expireTimeMs = 1000 * 60 * 60L; //1시간
+    private final Long expireTimeMs = 1000 * 60 * 60L; //1시간
 
     public LoginResponse loginKakao(String code, String requestHelper) {
-        OAuthInfoParam oAuthInfoParam = requestInfoHelpers.get(requestHelper).request(code);
-        log.info("oAuthInfoParam image ={}", oAuthInfoParam.getImage());
-        Long userId = findOrCreateUser(oAuthInfoParam);
-        LoginResponse loginResponse = getLoginResponse(userId, oAuthInfoParam);
+        RequestInfoHelper helper = requestInfoHelpers.get(requestHelper);
+        KaKaoInfoParam oauthInfoParam = helper.request(code);
+        log.info("oAuthInfoParam image ={}", oauthInfoParam.getImage());
+        Long userId = findOrCreateUser(oauthInfoParam);
+        LoginResponse loginResponse = getLoginResponse(userId, oauthInfoParam);
         return loginResponse;
     }
 
@@ -57,6 +59,4 @@ public class OAuthService {
             return newUser.getId();
         }
     }
-
-
 }
