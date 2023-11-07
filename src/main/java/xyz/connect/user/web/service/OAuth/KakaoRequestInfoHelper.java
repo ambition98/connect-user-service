@@ -22,35 +22,34 @@ public class KakaoRequestInfoHelper implements RequestInfoHelper {
     private final RestTemplate restTemplate;
     private static final String GRANT_TYPE = "authorization_code";
 
-    @Value("${oauth.kakao.url.auth}")
-    private String authUrl;
-
-    @Value("${oauth.kakao.url.api}")
-    private String apiUrl;
-
     @Value("${oauth.kakao.client-id}")
     private String clientId;
 
+    @Value("${oauth.kakao.redirect-uri}")
+    private String redirectUri;
 
     public String requestAccessToken(String code) {
-        String url = authUrl + "/oauth/token";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        String url = "https://kauth.kakao.com/oauth/token";
+
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         params.add("code", code);
         params.add("grant_type", GRANT_TYPE);
         params.add("client_id", clientId);
+        params.add("redirect_uri", redirectUri);
+
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, httpHeaders);
         log.info("url = {}", url);
         log.info("params = {}", params);
         KakaoToken response = restTemplate.postForObject(url, request, KakaoToken.class);
-        assert response != null;
+
         return response.getAccessToken();
     }
 
 
     public KaKaoInfoParam requestInfo(String accessToken) {
-        String url = apiUrl + "/v2/user/me";
+        String url = "https://kapi.kakao.com/v2/user/me";
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
